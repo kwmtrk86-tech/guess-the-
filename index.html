@@ -54,6 +54,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        line-height: 1.4;
       }
 
       button::before {
@@ -220,6 +221,15 @@
           inset 0 1px 0 rgba(255, 255, 255, 0.1);
         transform: none;
       }
+
+      .shortcut {
+        display: block;
+        font-size: 12px;
+        font-weight: 400;
+        color: #a0a0a0;
+        margin-top: 2px;
+        opacity: 0.8;
+      }
       #message {
         margin-top: 40px;
         font-weight: 500;
@@ -276,10 +286,16 @@
     </div>
     <div class="button-container">
       <div class="button-group">
-        <button id="playBtn">音を鳴らす</button>
-        <button id="repeatBtn" disabled>もう一度鳴らす</button>
+        <button id="playBtn">
+          音を鳴らす <span class="shortcut">(F)</span>
+        </button>
+        <button id="repeatBtn" disabled>
+          もう一度鳴らす <span class="shortcut">(Space)</span>
+        </button>
       </div>
-      <button id="referenceBtn">下のド</button>
+      <button id="referenceBtn">
+        下のド <span class="shortcut">(J)</span>
+      </button>
     </div>
     <div id="keyboard"></div>
     <div id="message" class="info">音を鳴らしてスタートしてください</div>
@@ -384,9 +400,33 @@
         const keyboardDiv = document.getElementById("keyboard");
         keyboardDiv.innerHTML = ""; // 既存のボタンをクリア
 
-        notes.forEach((note) => {
+        // ショートカットキーマップ（モードと位置によって異なる）
+        const shortcutMap = {
+          diatonic: ["Q", "W", "E", "R", "T", "Y", "U", "I"],
+          chromatic: [
+            "Q",
+            "W",
+            "E",
+            "R",
+            "T",
+            "Y",
+            "U",
+            "I",
+            "O",
+            "P",
+            "G",
+            "H",
+            "B",
+          ],
+        };
+
+        notes.forEach((note, index) => {
           const btn = document.createElement("button");
-          btn.textContent = note.name;
+          const shortcutKey = shortcutMap[currentMode]?.[index];
+          const shortcutDisplay = shortcutKey
+            ? `<span class="shortcut">(${shortcutKey})</span>`
+            : "";
+          btn.innerHTML = `${note.name}${shortcutDisplay ? "<br>" + shortcutDisplay : ""}`;
           btn.addEventListener("click", () => {
             const msgEl = document.getElementById("message");
             if (!currentNote) {
@@ -425,6 +465,74 @@
 
       // 初期化時にキーボードを生成
       generateKeyboard();
+
+      // キーボードイベント処理
+      function normalizeKey(key) {
+        // 大文字に統一
+        return key.toUpperCase();
+      }
+
+      // キーバインディングの定義
+      const keyBindings = {
+        // メインコマンド
+        F: () => document.getElementById("playBtn").click(),
+        " ": () => document.getElementById("repeatBtn").click(),
+        J: () => document.getElementById("referenceBtn").click(),
+
+        // ドレミモード（7音）
+        Q: { diatonic: 0, chromatic: 0 },
+        W: { diatonic: 1, chromatic: 1 },
+        E: { diatonic: 2, chromatic: 2 },
+        R: { diatonic: 3, chromatic: 3 },
+        T: { diatonic: 4, chromatic: 4 },
+        Y: { diatonic: 5, chromatic: 5 },
+        U: { diatonic: 6, chromatic: 6 },
+        I: { diatonic: 7, chromatic: 7 },
+
+        // 半音階追加のキー
+        O: { chromatic: 8 },
+        P: { chromatic: 9 },
+        G: { chromatic: 10 }, // ラ#
+        H: { chromatic: 11 }, // シ
+        B: { chromatic: 12 }, // 高いド
+      };
+
+      document.addEventListener("keydown", (e) => {
+        const key = normalizeKey(e.key);
+
+        // スペースキーの場合は特別処理
+        if (key === " ") {
+          e.preventDefault();
+          const binding = keyBindings[" "];
+          if (binding) binding();
+          return;
+        }
+
+        const binding = keyBindings[key];
+        if (!binding) return;
+
+        // メインコマンド（関数）の場合
+        if (typeof binding === "function") {
+          binding();
+          return;
+        }
+
+        // ノート選択コマンド（オブジェクト）の場合
+        const modeKey = currentMode;
+        const noteIndex = binding[modeKey];
+
+        if (noteIndex === undefined) return;
+
+        if (noteIndex < notes.length) {
+          const note = notes[noteIndex];
+          // 対応するボタンをクリック
+          const keyboardDiv = document.getElementById("keyboard");
+          const buttons = keyboardDiv.querySelectorAll("button");
+          if (buttons[noteIndex]) {
+            buttons[noteIndex].click();
+          }
+        }
+      });
     </script>
   </body>
 </html>
