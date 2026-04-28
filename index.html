@@ -4,27 +4,41 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>音当てゲーム（C4〜C5）</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Noto+Sans+JP:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      :root {
+        --bg-color: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        --text-main: white;
+      }
+
       * {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
 
       body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
-          Arial, sans-serif;
+        /* フォントをInterとNoto Sans JPに指定 */
+        font-family: "Inter", "Noto Sans JP", sans-serif;
+
+        /* 字間を少し空けて抜け感（モダンさ）を出す */
+        letter-spacing: 0.03em;
+
+        background: var(--bg-color);
+        color: var(--text-main);
         text-align: center;
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-        color: white;
+        margin: 0;
+        padding: 20px;
+        padding-top: 60px;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-        margin: 0;
-        padding: 20px;
         overflow-x: hidden;
       }
 
