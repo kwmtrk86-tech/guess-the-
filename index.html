@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>音当てゲーム（C4〜C5）</title>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
       * {
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+          Arial, sans-serif;
         text-align: center;
         background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         color: white;
@@ -46,21 +48,27 @@
         border-radius: 10px;
         background: linear-gradient(135deg, #424245 0%, #2a2a2d 100%);
         color: white;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        box-shadow:
+          0 10px 30px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
       }
 
       button::before {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
         transition: left 0.5s ease;
       }
 
@@ -70,15 +78,17 @@
 
       button:hover {
         background: linear-gradient(135deg, #4a4a4d 0%, #323235 100%);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        box-shadow:
+          0 15px 40px rgba(0, 0, 0, 0.6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
       }
 
       button:active {
         transform: translateY(0);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        box-shadow:
+          0 5px 15px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
       }
       .control-section {
         margin-bottom: 40px;
@@ -104,16 +114,18 @@
         background: linear-gradient(135deg, #2a2a2d 0%, #1a1a1d 100%);
         color: white;
         cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow:
+          0 4px 15px rgba(0, 0, 0, 0.3),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
       }
 
       select:hover {
         background: linear-gradient(135deg, #323235 0%, #222225 100%);
         border-color: rgba(255, 255, 255, 0.2);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        box-shadow:
+          0 6px 20px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
       }
 
       select:focus {
@@ -127,16 +139,58 @@
         margin-bottom: 30px;
         color: white;
         padding: 14px 32px;
-        box-shadow: 0 15px 35px rgba(0, 113, 227, 0.3),
-                    0 10px 30px rgba(0, 0, 0, 0.5),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        box-shadow:
+          0 15px 35px rgba(0, 113, 227, 0.3),
+          0 10px 30px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
       }
 
       #playBtn:hover {
         background: linear-gradient(135deg, #0077ed 0%, #0055c5 100%);
-        box-shadow: 0 20px 45px rgba(0, 113, 227, 0.4),
-                    0 10px 30px rgba(0, 0, 0, 0.6),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        box-shadow:
+          0 20px 45px rgba(0, 113, 227, 0.4),
+          0 10px 30px rgba(0, 0, 0, 0.6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      #repeatBtn {
+        font-size: 15px;
+        font-weight: 500;
+        background: linear-gradient(135deg, #30b0c0 0%, #1f7a85 100%);
+        padding: 12px 24px;
+        box-shadow:
+          0 10px 30px rgba(48, 176, 192, 0.2),
+          0 10px 30px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+
+      #repeatBtn:hover {
+        background: linear-gradient(135deg, #36bfd0 0%, #248a98 100%);
+        box-shadow:
+          0 15px 40px rgba(48, 176, 192, 0.3),
+          0 10px 30px rgba(0, 0, 0, 0.6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+
+      #repeatBtn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      #repeatBtn:disabled:hover {
+        background: linear-gradient(135deg, #30b0c0 0%, #1f7a85 100%);
+        box-shadow:
+          0 10px 30px rgba(48, 176, 192, 0.2),
+          0 10px 30px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transform: none;
       }
       #message {
         margin-top: 40px;
@@ -192,7 +246,10 @@
         <option value="diatonic">ドレミ（7音）</option>
       </select>
     </div>
-    <button id="playBtn">音を鳴らす</button>
+    <div class="button-group">
+      <button id="playBtn">音を鳴らす</button>
+      <button id="repeatBtn" disabled>もう一度鳴らす</button>
+    </div>
     <div id="keyboard"></div>
     <div id="message" class="info">音を鳴らしてスタートしてください</div>
 
@@ -269,6 +326,16 @@
         const msgEl = document.getElementById("message");
         msgEl.textContent = "何の音でしょう？";
         msgEl.className = "info";
+
+        // 「もう一度鳴らす」ボタンを有効にする
+        document.getElementById("repeatBtn").disabled = false;
+      });
+
+      // 「もう一度鳴らす」ボタンの処理
+      document.getElementById("repeatBtn").addEventListener("click", () => {
+        if (currentNote) {
+          playSound(currentNote.freq);
+        }
       });
 
       // キーボードを生成する関数
@@ -291,6 +358,7 @@
               msgEl.textContent = `正解！ (${note.name}) です。`;
               msgEl.className = "correct";
               currentNote = null; // 正解したらリセット
+              document.getElementById("repeatBtn").disabled = true; // 「もう一度鳴らす」を無効にする
             } else {
               msgEl.textContent = "はずれ。もう一度考えてみてください。";
               msgEl.className = "incorrect";
@@ -309,8 +377,7 @@
         generateKeyboard();
         currentNote = null;
         const msgEl = document.getElementById("message");
-        msgEl.textContent =
-          "スケールを変更しました。音を鳴らしてください。";
+        msgEl.textContent = "スケールを変更しました。音を鳴らしてください。";
         msgEl.className = "info";
       });
 
