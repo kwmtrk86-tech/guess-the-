@@ -29,6 +29,19 @@
       button:hover {
         background-color: #555;
       }
+      select {
+        padding: 10px 15px;
+        font-size: 16px;
+        border: 1px solid #666;
+        border-radius: 4px;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+        margin-bottom: 20px;
+      }
+      select:hover {
+        background-color: #555;
+      }
       #playBtn {
         font-size: 20px;
         font-weight: bold;
@@ -54,6 +67,13 @@
   </head>
   <body>
     <h2>音当てゲーム</h2>
+    <div>
+      <label for="modeSelect">スケールモード：</label>
+      <select id="modeSelect">
+        <option value="chromatic">半音階</option>
+        <option value="diatonic">ドレミ（7音）</option>
+      </select>
+    </div>
     <button id="playBtn">音を鳴らす</button>
     <div id="keyboard"></div>
     <div id="message">音を鳴らしてスタートしてください</div>
@@ -62,8 +82,8 @@
       // Web Audio APIの初期化
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-      // C4からC5までの周波数データ
-      const notes = [
+      // すべての周波数データ
+      const allNotes = [
         { name: "C (ド)", freq: 261.63 },
         { name: "C#", freq: 277.18 },
         { name: "D (レ)", freq: 293.66 },
@@ -79,6 +99,20 @@
         { name: "C (高いド)", freq: 523.25 },
       ];
 
+      // ドレミファソラシドのみ
+      const diatonicNotes = [
+        { name: "C (ド)", freq: 261.63 },
+        { name: "D (レ)", freq: 293.66 },
+        { name: "E (ミ)", freq: 329.63 },
+        { name: "F (ファ)", freq: 349.23 },
+        { name: "G (ソ)", freq: 392.0 },
+        { name: "A (ラ)", freq: 440.0 },
+        { name: "B (シ)", freq: 493.88 },
+        { name: "C (高いド)", freq: 523.25 },
+      ];
+
+      let currentMode = "chromatic";
+      let notes = allNotes;
       let currentNote = null;
 
       // 音を鳴らす関数
@@ -118,33 +152,51 @@
         document.getElementById("message").style.color = "black";
       });
 
-      // 選択肢ボタンの生成
-      const keyboardDiv = document.getElementById("keyboard");
-      notes.forEach((note) => {
-        const btn = document.createElement("button");
-        btn.textContent = note.name;
-        btn.addEventListener("click", () => {
-          if (!currentNote) {
-            document.getElementById("message").textContent =
-              "先に「音を鳴らす」ボタンを押してください。";
-            return;
-          }
+      // キーボードを生成する関数
+      function generateKeyboard() {
+        const keyboardDiv = document.getElementById("keyboard");
+        keyboardDiv.innerHTML = ""; // 既存のボタンをクリア
 
-          if (note.name === currentNote.name) {
-            document.getElementById("message").textContent =
-              `正解！ (${note.name}) です。`;
-            document.getElementById("message").style.color = "green";
-            currentNote = null; // 正解したらリセット
-          } else {
-            document.getElementById("message").textContent =
-              "はずれ。もう一度考えてみてください。";
-            document.getElementById("message").style.color = "red";
-            // 間違えた場合は再度同じ音を鳴らしてヒントにする
-            playSound(currentNote.freq);
-          }
+        notes.forEach((note) => {
+          const btn = document.createElement("button");
+          btn.textContent = note.name;
+          btn.addEventListener("click", () => {
+            if (!currentNote) {
+              document.getElementById("message").textContent =
+                "先に「音を鳴らす」ボタンを押してください。";
+              return;
+            }
+
+            if (note.name === currentNote.name) {
+              document.getElementById("message").textContent =
+                `正解！ (${note.name}) です。`;
+              document.getElementById("message").style.color = "green";
+              currentNote = null; // 正解したらリセット
+            } else {
+              document.getElementById("message").textContent =
+                "はずれ。もう一度考えてみてください。";
+              document.getElementById("message").style.color = "red";
+              // 間違えた場合は再度同じ音を鳴らしてヒントにする
+              playSound(currentNote.freq);
+            }
+          });
+          keyboardDiv.appendChild(btn);
         });
-        keyboardDiv.appendChild(btn);
+      }
+
+      // スケールモード変更時の処理
+      document.getElementById("modeSelect").addEventListener("change", (e) => {
+        currentMode = e.target.value;
+        notes = currentMode === "chromatic" ? allNotes : diatonicNotes;
+        generateKeyboard();
+        currentNote = null;
+        document.getElementById("message").textContent =
+          "スケールを変更しました。音を鳴らしてください。";
+        document.getElementById("message").style.color = "black";
       });
+
+      // 初期化時にキーボードを生成
+      generateKeyboard();
     </script>
   </body>
 </html>
