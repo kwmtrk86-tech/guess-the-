@@ -2,12 +2,19 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>音当てゲーム（C4〜C5）</title>
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
       body {
-        font-family: sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
         text-align: center;
-        background-color: black;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
         color: white;
         display: flex;
         flex-direction: column;
@@ -15,60 +22,171 @@
         align-items: center;
         min-height: 100vh;
         margin: 0;
+        padding: 20px;
+        overflow-x: hidden;
+      }
+
+      h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0 0 30px 0;
+        letter-spacing: -0.5px;
+        background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
       button {
-        padding: 15px 20px;
-        margin: 5px;
-        font-size: 16px;
+        padding: 12px 24px;
+        margin: 8px;
+        font-size: 15px;
+        font-weight: 500;
         cursor: pointer;
-        border: 1px solid #666;
-        border-radius: 4px;
-        background-color: #333;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #424245 0%, #2a2a2d 100%);
         color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
       }
+
+      button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+      }
+
+      button:hover::before {
+        left: 100%;
+      }
+
       button:hover {
-        background-color: #555;
+        background: linear-gradient(135deg, #4a4a4d 0%, #323235 100%);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
       }
+
+      button:active {
+        transform: translateY(0);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+      .control-section {
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        justify-content: center;
+      }
+
+      label {
+        font-weight: 500;
+        font-size: 15px;
+        color: #a0a0a0;
+        letter-spacing: 0.5px;
+      }
+
       select {
-        padding: 10px 15px;
-        font-size: 16px;
-        border: 1px solid #666;
-        border-radius: 4px;
-        background-color: #333;
+        padding: 10px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        background: linear-gradient(135deg, #2a2a2d 0%, #1a1a1d 100%);
         color: white;
         cursor: pointer;
-        margin-bottom: 20px;
+        transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05);
       }
+
       select:hover {
-        background-color: #555;
+        background: linear-gradient(135deg, #323235 0%, #222225 100%);
+        border-color: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      }
+
+      select:focus {
+        outline: none;
+        border-color: rgba(255, 255, 255, 0.3);
       }
       #playBtn {
-        font-size: 20px;
-        font-weight: bold;
-        background-color: #005a87;
-        border-color: #00a3cc;
-        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #0071e3 0%, #0051ba 100%);
+        margin-bottom: 30px;
         color: white;
+        padding: 14px 32px;
+        box-shadow: 0 15px 35px rgba(0, 113, 227, 0.3),
+                    0 10px 30px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+
+      #playBtn:hover {
+        background: linear-gradient(135deg, #0077ed 0%, #0055c5 100%);
+        box-shadow: 0 20px 45px rgba(0, 113, 227, 0.4),
+                    0 10px 30px rgba(0, 0, 0, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
       #message {
-        margin-top: 30px;
-        font-weight: bold;
-        font-size: 1.5em;
+        margin-top: 40px;
+        font-weight: 500;
+        font-size: 1.25rem;
         min-height: 2em;
+        letter-spacing: 0.5px;
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #message.correct {
+        color: #34c759;
+        text-shadow: 0 0 20px rgba(52, 199, 89, 0.3);
+      }
+
+      #message.incorrect {
+        color: #ff3b30;
+        text-shadow: 0 0 20px rgba(255, 59, 48, 0.3);
+      }
+
+      #message.info {
+        color: #a0a0a0;
       }
       #keyboard {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
+        gap: 12px;
         justify-content: center;
-        margin-top: 20px;
+        margin-top: 30px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
       }
     </style>
   </head>
   <body>
     <h2>音当てゲーム</h2>
-    <div>
-      <label for="modeSelect">スケールモード：</label>
+    <div class="control-section">
+      <label for="modeSelect">モード：</label>
       <select id="modeSelect">
         <option value="chromatic">半音階</option>
         <option value="diatonic">ドレミ（7音）</option>
@@ -76,7 +194,7 @@
     </div>
     <button id="playBtn">音を鳴らす</button>
     <div id="keyboard"></div>
-    <div id="message">音を鳴らしてスタートしてください</div>
+    <div id="message" class="info">音を鳴らしてスタートしてください</div>
 
     <script>
       // Web Audio APIの初期化
@@ -148,8 +266,9 @@
         currentNote = notes[randomIndex];
         playSound(currentNote.freq);
 
-        document.getElementById("message").textContent = "何の音でしょう？";
-        document.getElementById("message").style.color = "black";
+        const msgEl = document.getElementById("message");
+        msgEl.textContent = "何の音でしょう？";
+        msgEl.className = "info";
       });
 
       // キーボードを生成する関数
@@ -161,21 +280,20 @@
           const btn = document.createElement("button");
           btn.textContent = note.name;
           btn.addEventListener("click", () => {
+            const msgEl = document.getElementById("message");
             if (!currentNote) {
-              document.getElementById("message").textContent =
-                "先に「音を鳴らす」ボタンを押してください。";
+              msgEl.textContent = "先に「音を鳴らす」ボタンを押してください。";
+              msgEl.className = "info";
               return;
             }
 
             if (note.name === currentNote.name) {
-              document.getElementById("message").textContent =
-                `正解！ (${note.name}) です。`;
-              document.getElementById("message").style.color = "green";
+              msgEl.textContent = `正解！ (${note.name}) です。`;
+              msgEl.className = "correct";
               currentNote = null; // 正解したらリセット
             } else {
-              document.getElementById("message").textContent =
-                "はずれ。もう一度考えてみてください。";
-              document.getElementById("message").style.color = "red";
+              msgEl.textContent = "はずれ。もう一度考えてみてください。";
+              msgEl.className = "incorrect";
               // 間違えた場合は再度同じ音を鳴らしてヒントにする
               playSound(currentNote.freq);
             }
@@ -190,9 +308,10 @@
         notes = currentMode === "chromatic" ? allNotes : diatonicNotes;
         generateKeyboard();
         currentNote = null;
-        document.getElementById("message").textContent =
+        const msgEl = document.getElementById("message");
+        msgEl.textContent =
           "スケールを変更しました。音を鳴らしてください。";
-        document.getElementById("message").style.color = "black";
+        msgEl.className = "info";
       });
 
       // 初期化時にキーボードを生成
