@@ -160,6 +160,34 @@
         margin-bottom: 30px;
       }
 
+      .button-container {
+        display: flex;
+        gap: 40px;
+        justify-content: center;
+        align-items: flex-start;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      #referenceBtn {
+        font-size: 14px;
+        font-weight: 600;
+        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        padding: 12px 20px;
+        box-shadow:
+          0 10px 30px rgba(124, 58, 237, 0.2),
+          0 10px 30px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      }
+
+      #referenceBtn:hover {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        box-shadow:
+          0 15px 40px rgba(124, 58, 237, 0.3),
+          0 10px 30px rgba(0, 0, 0, 0.6),
+          inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      }
+
       #repeatBtn {
         font-size: 15px;
         font-weight: 500;
@@ -246,9 +274,12 @@
         <option value="diatonic">ドレミ（7音）</option>
       </select>
     </div>
-    <div class="button-group">
-      <button id="playBtn">音を鳴らす</button>
-      <button id="repeatBtn" disabled>もう一度鳴らす</button>
+    <div class="button-container">
+      <div class="button-group">
+        <button id="playBtn">音を鳴らす</button>
+        <button id="repeatBtn" disabled>もう一度鳴らす</button>
+      </div>
+      <button id="referenceBtn">下のド</button>
     </div>
     <div id="keyboard"></div>
     <div id="message" class="info">音を鳴らしてスタートしてください</div>
@@ -338,6 +369,16 @@
         }
       });
 
+      // 「下のド」ボタンの処理（リファレンス音）
+      document.getElementById("referenceBtn").addEventListener("click", () => {
+        // ブラウザの自動再生ポリシー対応
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+        // 下のド（C4）の周波数を鳴らす
+        playSound(261.63);
+      });
+
       // キーボードを生成する関数
       function generateKeyboard() {
         const keyboardDiv = document.getElementById("keyboard");
@@ -376,6 +417,7 @@
         notes = currentMode === "chromatic" ? allNotes : diatonicNotes;
         generateKeyboard();
         currentNote = null;
+        document.getElementById("repeatBtn").disabled = true; // 「もう一度鳴らす」を無効にする
         const msgEl = document.getElementById("message");
         msgEl.textContent = "スケールを変更しました。音を鳴らしてください。";
         msgEl.className = "info";
